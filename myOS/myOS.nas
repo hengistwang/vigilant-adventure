@@ -1,8 +1,11 @@
 ;; myOS
 
+    ORG     0x7c00          ;; 程序的装载地址
+
 ;; FAT12格式软盘专用格式
 
-    DB      0xeb, 0x4e, 0x90
+    JMP     entry
+    DB      0x90
     DB      "IPL     "       ;; 启动区名称(固定8 BYTE)
     DW      512              ;; 每个扇区(sector)的大小(固定512 BYTE)
     DB      1                ;; cluster 的大小(一个扇区)
@@ -22,25 +25,37 @@
     DB      "FAT12   "       ;; 磁盘格式名称(8 BYTE)
     RESB    18               ;; 预留18 BYTE
 
+;; 程序核心
 
-;; 程序主体
+entry:
+        MOV AX,0              ;; 初始化寄存器  
+        MOV SS,AX
+        MOV SP,0x7c00
+        MOV DS,AX
+        MOV ES AX
 
-    Db 0xb8, 0x00, 0x00, 0x8e, 0xd0, 0xbc, 0x00, 0x7c
-    Db 0x8e, 0xd8, 0x8e, 0xc0, 0xbe, 0x74, 0x7c, 0x8a
-    Db 0x04, 0x83, 0xc6, 0x01, 0x3c, 0x00, 0x74, 0x09
-    Db 0xb4, 0x0e, 0xbb, 0x0f, 0x00, 0xcd, 0x10, 0xeb
-    Db 0xee, 0xf4, 0xeb, 0xfd
+        MOV SI,msg
+putloop:
+        MOV AL,[SI]
+        ADD SI,1
+        CMP AL,0
+        JE  fin
+        MOV AH,0x0e
+        MOV BX,15
+        INT 0x10                ;; 调用0x10中断
+        JMP putloop
+fin:
+        HLT                     ;; 类似于sleep语句
+        JMP fin
+msg:
+        DB      0x0a
+        DB      "hello, hengist!"
+        DB      0x0a
+        DB      0
 
+        RESB    0x7dfe-$
 
-;; 信息显示
-
-    DB      0x0a
-    DB      "hello, hengist!"
-    DB      0x0a
-    DB      0
-    RESB    0x1fe-$
-    DB      0x55, 0xaa
-
+        DB      0x55, 0xaa
 
 ;; others
 
