@@ -1,1 +1,1 @@
-..\tools\nask.exe myOS.nas myOS.img
+..\tools\nask.exe ipl.nas ipl.bin ipl.lst
