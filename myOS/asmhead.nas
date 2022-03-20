@@ -25,19 +25,6 @@ VRAM	EQU		0x0ff8			; 图像缓冲区的起始地址
 		MOV		WORD [SCRNY],200
 		MOV		DWORD [VRAM],0x000a0000
 
-		MOV		BX,DS
-		MOV		AX,0xa000
-		MOV 	DS,AX
-		MOV		SI,0
-
-draw:
-		MOV		[SI],BYTE 15
-		ADD 	SI,1
-		CMP 	SI,320*100
-		JB 		draw
-
-		MOV  	DS,BX
-
 ; 通过BIOS获取指示灯状态
 
 		MOV		AH,0x02
