@@ -1,4 +1,4 @@
-OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj int.obj
+OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj int.obj fifo.obj
 
 TOOLPATH = ../z_tools/
 INCPATH  = ../z_tools/haribote/
@@ -86,7 +86,4 @@ clean :
 	-$(DEL) bootpack.bim
 	-$(DEL) bootpack.hrb
 	-$(DEL) haribote.sys
-
-src_only :
-	$(MAKE) clean
 	-$(DEL) haribote.img
