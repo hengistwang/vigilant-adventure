@@ -29,7 +29,7 @@ int fifo8_put(struct FIFO8 *fifo, unsigned char data)
 	if (fifo->p == fifo->size) {
 		fifo->p = 0;
 	}
-	--fifo->free;
+	fifo->free--;
 	return 0;
 }
 
@@ -42,11 +42,11 @@ int fifo8_get(struct FIFO8 *fifo)
 		return -1;
 	}
 	data = fifo->buf[fifo->q];
-	++fifo->q;
+	fifo->q++;
 	if (fifo->q == fifo->size) {
 		fifo->q = 0;
 	}
-	++fifo->free;
+	fifo->free++;
 	return data;
 }
 
