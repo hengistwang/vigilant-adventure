@@ -1,4 +1,4 @@
-/* 内存管理 */
+/* memory.c */
 
 #include "bootpack.h"
 
@@ -25,7 +25,7 @@ unsigned int memtest(unsigned int start, unsigned int end)
 
 	if (flg486 != 0) {
 		cr0 = load_cr0();
-		cr0 |= CR0_CACHE_DISABLE; /* 禁止缓存 */ 
+		cr0 |= CR0_CACHE_DISABLE; /* 禁止缓存 */
 		store_cr0(cr0);
 	}
 

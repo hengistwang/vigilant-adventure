@@ -1,8 +1,9 @@
 OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj \
-		int.obj fifo.obj keyboard.obj mouse.obj memory.obj sheet.obj timer.obj
+		int.obj fifo.obj keyboard.obj mouse.obj memory.obj sheet.obj timer.obj \
+		mtask.obj window.obj console.obj file.obj
 
-TOOLPATH = ../z_tools/
-INCPATH  = ../z_tools/haribote/
+TOOLPATH = ../../z_tools/
+INCPATH  = ../../z_tools/haribote/
 
 MAKE     = $(TOOLPATH)make.exe -r
 NASK     = $(TOOLPATH)nask.exe
@@ -12,18 +13,16 @@ OBJ2BIM  = $(TOOLPATH)obj2bim.exe
 MAKEFONT = $(TOOLPATH)makefont.exe
 BIN2OBJ  = $(TOOLPATH)bin2obj.exe
 BIM2HRB  = $(TOOLPATH)bim2hrb.exe
-RULEFILE = $(TOOLPATH)haribote/haribote.rul
+RULEFILE = ../haribote.rul
 EDIMG    = $(TOOLPATH)edimg.exe
 IMGTOL   = $(TOOLPATH)imgtol.com
+GOLIB    = $(TOOLPATH)golib00.exe
 COPY     = copy
 DEL      = del
 
-# 默认动作
-
 default :
-	$(MAKE) img
-
-# 镜像文件生成
+	$(MAKE) ipl10.bin
+	$(MAKE) haribote.sys
 
 ipl10.bin : ipl10.nas Makefile
 	$(NASK) ipl10.nas ipl10.bin ipl10.lst
@@ -48,14 +47,6 @@ bootpack.hrb : bootpack.bim Makefile
 haribote.sys : asmhead.bin bootpack.hrb Makefile
 	copy /B asmhead.bin+bootpack.hrb haribote.sys
 
-haribote.img : ipl10.bin haribote.sys Makefile
-	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
-		wbinimg src:ipl10.bin len:512 from:0 to:0 \
-		copy from:haribote.sys to:@: \
-		imgout:haribote.img
-
-# 其他指令
-
 %.gas : %.c bootpack.h Makefile
 	$(CC1) -o $*.gas $*.c
 
@@ -65,26 +56,13 @@ haribote.img : ipl10.bin haribote.sys Makefile
 %.obj : %.nas Makefile
 	$(NASK) $*.nas $*.obj $*.lst
 
-# 运行程序
-
-img :
-	$(MAKE) haribote.img
-
-run :
-	$(MAKE) img
-	$(COPY) haribote.img ..\z_tools\qemu\fdimage0.bin
-	$(MAKE) -C ../z_tools/qemu
-
-install :
-	$(MAKE) img
-	$(IMGTOL) w a: haribote.img
-
 clean :
-	-$(DEL) *.bin
+	-$(DEL) asmhead.bin
+	-$(DEL) hankaku.bin
 	-$(DEL) *.lst
 	-$(DEL) *.obj
-	-$(DEL) bootpack.map
-	-$(DEL) bootpack.bim
-	-$(DEL) bootpack.hrb
+	-$(DEL) *.map
+	-$(DEL) *.bim
+	-$(DEL) *.hrb
+	-$(DEL) ipl10.bin
 	-$(DEL) haribote.sys
-	-$(DEL) haribote.img
